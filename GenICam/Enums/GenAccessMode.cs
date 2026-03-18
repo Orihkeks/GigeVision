@@ -1,33 +1,32 @@
-﻿namespace GenICam
+﻿namespace GenICam;
+
+/// <summary>
+/// GenICam Access Mode.
+/// </summary>
+public enum GenAccessMode
 {
     /// <summary>
-    /// GenICam Access Mode.
+    /// Not Implemented
     /// </summary>
-    public enum GenAccessMode
-    {
-        /// <summary>
-        /// Not Implemented
-        /// </summary>
-        NI,
+    NI,
 
-        /// <summary>
-        /// Not Available
-        /// </summary>
-        NA,
+    /// <summary>
+    /// Not Available
+    /// </summary>
+    NA,
 
-        /// <summary>
-        /// Write Only
-        /// </summary>
-        WO,
+    /// <summary>
+    /// Write Only
+    /// </summary>
+    WO,
 
-        /// <summary>
-        /// Read Only
-        /// </summary>
-        RO,
+    /// <summary>
+    /// Read Only
+    /// </summary>
+    RO,
 
-        /// <summary>
-        /// Readable and Writable
-        /// </summary>
-        RW,
-    }
+    /// <summary>
+    /// Readable and Writable
+    /// </summary>
+    RW,
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +14,7 @@ namespace GenICam
     /// </summary>
     public class MathParserHelper
     {
-        private static readonly List<char> opreations = new() { '(', '+', '-', '/', '*', '=', '?', ':', ')', '>', '<', '&', '|', '^', '~', '%' };
+        private static readonly ImmutableArray<char> Opreations = ['(', '+', '-', '/', '*', '=', '?', ':', ')', '>', '<', '&', '|', '^', '~', '%'];
 
         /// <summary>
         /// Prepare a formula.
@@ -22,9 +24,9 @@ namespace GenICam
         /// <returns>A new formula with changes from the expressions.</returns>
         public static string PrepareFromula(string formula, Dictionary<string, string> expressions = null)
         {
-            foreach (var character in opreations)
+            foreach (var character in Opreations)
             {
-                if (opreations.Where(x => x == character).Any())
+                if (Opreations.Any(x => x == character))
                 {
                     formula = formula.Replace($"{character}", $" {character} ");
                     if (expressions != null)
@@ -49,11 +51,11 @@ namespace GenICam
         {
             try
             {
-                if (experssion.Contains("?"))
-                {
-                    var ternaryData = SeparateTernaryExpressions(experssion);
-                    experssion = $"if({GetBracketed(ternaryData[0])}, {CalculateExpression(GetBracketed(ternaryData[1]))}, {CalculateExpression(GetBracketed(ternaryData[2]))})";
-                }
+                if (!experssion.Contains('?'))
+                    return new Expression(experssion).calculate();
+
+                var ternaryData = SeparateTernaryExpressions(experssion);
+                experssion = $"if({GetBracketed(ternaryData[0])}, {CalculateExpression(GetBracketed(ternaryData[1]))}, {CalculateExpression(GetBracketed(ternaryData[2]))})";
 
                 return new Expression(experssion).calculate();
             }
@@ -66,53 +68,49 @@ namespace GenICam
 
         private static List<string> SeparateTernaryExpressions(string expression)
         {
-            StringBuilder builder = new StringBuilder();
-            string condition = String.Empty;
-            string trueCondition = String.Empty;
-            string falseCondition = String.Empty;
+            var builder = new StringBuilder();
+            var condition = string.Empty;
+            var trueCondition = string.Empty;
 
-            bool firstConditionFound = false;
+            var firstConditionFound = false;
             var parenthesis = 0;
-            for (int i = 0; i < expression.Length; ++i) {
-                char ch = expression[i];
+            foreach (var ch in expression)
+            {
+                switch (ch)
+                {
+                    case '(':
+                        parenthesis++;
+                        break;
+                    case ')':
+                        parenthesis--;
+                        break;
+                    case '?' when !firstConditionFound:
+                        for (var w = parenthesis; w > 0; w--)
+                        {
+                            builder.Append(')');
+                        }
 
-                if (ch == '(')
-                {
-                    parenthesis++;
+                        condition = builder.ToString();
+                        builder.Clear();
+                        firstConditionFound = true;
+                        parenthesis = 0;
+                        continue;
+                    case ':' when parenthesis == 0:
+                        trueCondition = builder.ToString();
+                        builder.Clear();
+                        continue;
                 }
-                else if (ch == ')')
-                {
-                    parenthesis--;
-                }
-                else if (ch == '?' && !firstConditionFound)
-                { 
-                    for (var w = parenthesis; w > 0; w--)
-                    {
-                        builder.Append(")");
-                    }
 
-                    condition = builder.ToString();
-                    builder.Clear();
-                    firstConditionFound = true;
-                    parenthesis = 0;
-                    continue;
-                }
-                else if (ch == ':' && parenthesis == 0)
-                {
-                    trueCondition = builder.ToString();
-                    builder.Clear();
-                    continue;
-                }
                 builder.Append(ch);
             }
 
-            if (parenthesis > 0) 
+            if (parenthesis > 0)
             {
                 Console.Write("a");
             }
 
-            falseCondition = builder.ToString();
-            return new List<string> { condition, trueCondition, falseCondition };
+            var falseCondition = builder.ToString();
+            return[condition, trueCondition, falseCondition];
         }
 
         /// <summary>
@@ -120,25 +118,24 @@ namespace GenICam
         /// </summary>
         /// <param name="formula">The formlua to process.</param>
         /// <returns>The formula in brackets.</returns>
-        public static string GetBracketed(string formula)
+        private static string GetBracketed(string formula)
         {
-            int openBracketCounter = 0;
-            int charIndex = 0;
+            var openBracketCounter = 0;
+            var charIndex = 0;
             foreach (var character in formula)
             {
-                if (character == '(')
+                switch (character)
                 {
-                    openBracketCounter++;
-                }
-
-                if (character == ')' && openBracketCounter < 1)
-                {
-                    formula = formula.Remove(charIndex, 1);
-                    charIndex--;
-                }
-                else if (character == ')')
-                {
-                    openBracketCounter--;
+                    case '(':
+                        openBracketCounter++;
+                        break;
+                    case ')' when openBracketCounter < 1:
+                        formula = formula.Remove(charIndex, 1);
+                        charIndex--;
+                        break;
+                    case ')':
+                        openBracketCounter--;
+                        break;
                 }
 
                 charIndex++;
@@ -180,9 +177,9 @@ namespace GenICam
         public static double Evaluate(string expression)
         {
             expression = "( " + expression + " )";
-            foreach (var character in opreations)
+            foreach (var character in Opreations)
             {
-                if (opreations.Where(x => x == character).Any())
+                if (Opreations.Any(x => x == character))
                 {
                     expression = expression.Replace($"{character}", $" {character} ");
                 }

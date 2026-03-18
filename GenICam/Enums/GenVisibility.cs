@@ -1,29 +1,28 @@
-﻿namespace GenICam
+﻿namespace GenICam;
+
+/// <summary>
+/// Gen Visibility
+/// </summary>
+public enum GenVisibility
 {
     /// <summary>
-    /// Gen Visibility
+    /// Beginner (First Level)
     /// </summary>
-    public enum GenVisibility
-    {
-        /// <summary>
-        /// Beginner (First Level)
-        /// </summary>
-        Beginner,
+    Beginner,
 
-        /// <summary>
-        /// Expert(Second Level)
-        /// </summary>
-        Expert,
+    /// <summary>
+    /// Expert(Second Level)
+    /// </summary>
+    Expert,
 
-        /// <summary>
-        /// Guru (Third Level)
-        /// </summary>
-        Guru,
+    /// <summary>
+    /// Guru (Third Level)
+    /// </summary>
+    Guru,
 
-        /// <summary>
-        /// this level meant to be hidden
-        /// </summary>
+    /// <summary>
+    /// this level meant to be hidden
+    /// </summary>
 
-        Invisible,
-    }
+    Invisible,
 }

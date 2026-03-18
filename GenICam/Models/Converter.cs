@@ -115,7 +115,7 @@ namespace GenICam
                             throw new GenICamException("Failed to read formula register value", new NullReferenceException());
                         }
 
-                        FormulaFrom = FormulaFrom.Replace(word, string.Format("0x{0:X8}", value));
+                        FormulaFrom = FormulaFrom.Replace(word, $"0x{value:X8}");
                     }
                 }
 
@@ -136,7 +136,7 @@ namespace GenICam
                 {
                     if (word.Equals("FROM"))
                     {
-                        FormulaTo = FormulaTo.Replace(word, string.Format("0x{0:X8}", value));
+                        FormulaTo = FormulaTo.Replace(word, $"0x{value:X8}");
                     }
 
                     if (PVariables.ContainsKey(word))
@@ -149,7 +149,7 @@ namespace GenICam
                             throw new GenICamException("Failed to read formula register value", new NullReferenceException());
                         }
 
-                        FormulaTo = FormulaTo.Replace(word, string.Format("0x{0:X8}", variableValue));
+                        FormulaTo = FormulaTo.Replace(word, $"0x{variableValue:X8}");
                     }
                 }
 

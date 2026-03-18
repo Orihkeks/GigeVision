@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Prism.Commands;
 
 namespace GenICam
 {
@@ -58,10 +57,6 @@ namespace GenICam
             Representation = representation;
 
             Unit = unit;
-
-            // Control Commands
-            GetValueCommand = new DelegateCommand(ExecuteGetValueCommand);
-            SetValueCommand = new DelegateCommand<object>(ExecuteSetValueCommand);
         }
 
         /// <summary>
@@ -143,9 +138,6 @@ namespace GenICam
         /// <inheritdoc/>
         public async Task<IReplyPacket> SetValueAsync(long value)
         {
-            RaisePropertyChanged(nameof(Max));
-            RaisePropertyChanged(nameof(Min));
-
             if (PValue is not null)
             {
                 return await PValue.SetValueAsync(value);
@@ -290,32 +282,6 @@ namespace GenICam
         public Task<IReplyPacket> ImposeMaxAsync(long value)
         {
             throw new NotImplementedException();
-        }
-
-        private async void ExecuteGetValueCommand()
-        {
-            try
-            {
-                Value = await GetValueAsync();
-                RaisePropertyChanged(nameof(Value));
-            }
-            catch (Exception ex)
-            {
-                //ToDo: display exception.
-            }
-        }
-
-        private async void ExecuteSetValueCommand(object value)
-        {
-            try
-            {
-                await SetValueAsync((long)value);
-                RaisePropertyChanged(nameof(Value)); 
-            }
-            catch (Exception ex)
-            {
-                //ToDo: display exception.
-            }
         }
     }
 }

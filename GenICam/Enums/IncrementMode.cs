@@ -1,14 +1,13 @@
-﻿namespace GenICam
-{
-    /// <summary>
-    /// Increment mode.
-    /// </summary>
-    public enum IncrementMode
-    {
-        /// <summary>Fixed increment.</summary>
-        fixedIncrement,
+﻿namespace GenICam;
 
-        /// <summary>List increment.</summary>
-        listIncrement,
-    }
+/// <summary>
+/// Increment mode.
+/// </summary>
+public enum IncrementMode
+{
+    /// <summary>Fixed increment.</summary>
+    fixedIncrement,
+
+    /// <summary>List increment.</summary>
+    listIncrement,
 }

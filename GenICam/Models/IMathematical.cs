@@ -1,13 +1,12 @@
-﻿namespace GenICam
+﻿namespace GenICam;
+
+/// <summary>
+/// Interface for mathematical.
+/// </summary>
+public interface IMathematical : IPValue
 {
     /// <summary>
-    /// Interface for mathematical.
+    /// Gets the value.
     /// </summary>
-    public interface IMathematical : IPValue
-    {
-        /// <summary>
-        /// Gets the value.
-        /// </summary>
-        public double Value { get; }
-    }
+    public double Value { get; }
 }

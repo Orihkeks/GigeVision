@@ -1,12 +1,11 @@
-﻿namespace GenICam
-{
-    /// <summary>Sign of the element.</summary>
-    public enum Sign
-    {
-        /// <summary>Signed.</summary>
-        Signed,
+﻿namespace GenICam;
 
-        /// <summary>Unsigned.</summary>
-        Unsigned,
-    }
+/// <summary>Sign of the element.</summary>
+public enum Sign
+{
+    /// <summary>Signed.</summary>
+    Signed,
+
+    /// <summary>Unsigned.</summary>
+    Unsigned,
 }

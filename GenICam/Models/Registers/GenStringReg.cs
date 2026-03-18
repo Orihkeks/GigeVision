@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Prism.Commands;
 
 namespace GenICam
 {
@@ -26,8 +25,6 @@ namespace GenICam
             Address = address;
             Length = length;
             GenPort = genPort;
-            GetValueCommand = new DelegateCommand(ExecuteGetValueCommand);
-            SetValueCommand = new DelegateCommand(ExecuteSetValueCommand);
         }
 
         /// <summary>
@@ -99,23 +96,22 @@ namespace GenICam
 
         private async Task<IReplyPacket> SetStringValue(string value, IRegister register)
         {
-                var length = register.GetLength();
-                var pBuffer = ASCIIEncoding.ASCII.GetBytes(value);
+            var length = register.GetLength();
+            var pBuffer = Encoding.ASCII.GetBytes(value);
 
-                var reply = await register.SetAsync(pBuffer, length);
-                Value = Encoding.ASCII.GetString(reply.MemoryValue);
-                return reply;
+            var reply = await register.SetAsync(pBuffer, length);
+            Value = Encoding.ASCII.GetString(reply.MemoryValue);
+            return reply;
         }
 
         private async Task<IReplyPacket> SetStringValue(string value)
         {
+            var length = GetLength();
+            var pBuffer = Encoding.ASCII.GetBytes(value);
 
-                var length = GetLength();
-                var pBuffer = ASCIIEncoding.ASCII.GetBytes(value);
-
-                var reply = await SetAsync(pBuffer, length);
-                Value = Encoding.ASCII.GetString(reply.MemoryValue);
-                return reply;
+            var reply = await SetAsync(pBuffer, length);
+            Value = Encoding.ASCII.GetString(reply.MemoryValue);
+            return reply;
         }
 
         /// <inheritdoc/>
@@ -159,30 +155,20 @@ namespace GenICam
         {
             try
             {
-                if (await GetAddressAsync() is long address)
+                if (await GetAddressAsync() is not { } address)
                 {
-                    var addressBytes = BitConverter.GetBytes(address);
-                    Array.Reverse(addressBytes);
-                    return addressBytes;
+                    throw new GenICamException(message: "Failed to get the register address", new InvalidDataException());
                 }
 
-                throw new GenICamException(message: "Failed to get the register address", new InvalidDataException());
+                var addressBytes = BitConverter.GetBytes(address);
+                Array.Reverse(addressBytes);
+                return addressBytes;
+
             }
             catch (Exception ex)
             {
                 throw new GenICamException(message: "Failed to get the register address", ex);
             }
-        }
-
-        private async void ExecuteGetValueCommand()
-        {
-            Value = await GetValueAsync();
-            RaisePropertyChanged(nameof(Value));
-        }
-
-        private async void ExecuteSetValueCommand()
-        {
-            await SetValueAsync(Value);
         }
     }
 }

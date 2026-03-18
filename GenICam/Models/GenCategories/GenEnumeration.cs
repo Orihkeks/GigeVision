@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Prism.Commands;
 
 namespace GenICam
 {
@@ -23,9 +22,6 @@ namespace GenICam
                 : base(categoryProperties, pValue)
         {
             Entries = entries;
-
-            SetValueCommand = new DelegateCommand<object>(ExecuteSetValueCommand);
-            GetValueCommand = new DelegateCommand(ExecuteGetValueCommand);
         }
 
         /// <summary>
@@ -40,11 +36,11 @@ namespace GenICam
         public KeyValuePair<string, EnumEntry> CurrentEnumEntry { get; private set; }
 
         /// <inheritdoc/>
-        public async Task<long> GetValueAsync()
+        public async Task<long?> GetValueAsync()
         {
             if (PValue is not null)
             {
-                return (long)await PValue.GetValueAsync();
+                return await PValue.GetValueAsync();
             }
 
             throw new GenICamException(message: $"Unable to get the value, missing register reference", new MissingFieldException());
@@ -97,12 +93,8 @@ namespace GenICam
             {
                 var entries = Entries.Where(x => x.Value.Value == entryValue);
 
-                if (entries.Any())
-                {
-                    return entries.First();
-                }
-
-                throw new GenICamException("Invalid value", new InvalidDataException());
+                var keyValuePairs = entries as KeyValuePair<string, EnumEntry>[] ?? entries.ToArray();
+                return keyValuePairs.Length > 0 ? keyValuePairs.First() : throw new GenICamException("Invalid value", new InvalidDataException());
             }
             catch (ArgumentException ex)
             {
@@ -136,33 +128,6 @@ namespace GenICam
         Task IEnumeration.GetSymbolics(Dictionary<string, EnumEntry> entries)
         {
             throw new NotImplementedException();
-        }
-
-        private async void ExecuteGetValueCommand()
-        {
-            try
-            {
-                Value = await GetValueAsync();
-                CurrentEnumEntry = GetEntry(Value);
-                RaisePropertyChanged(nameof(CurrentEnumEntry));
-            }
-            catch (Exception ex)
-            {
-                //ToDo: display exception.
-            }
-        }
-
-        private async void ExecuteSetValueCommand(object value)
-        {
-            try
-            {
-                await SetValueAsync((long)value);
-                ExecuteGetValueCommand();
-            }
-            catch (Exception ex)
-            {
-                //ToDo: display exception.
-            }
         }
     }
 }

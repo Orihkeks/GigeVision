@@ -101,22 +101,14 @@ namespace GenICam.Models
             try
             {
                     var length = GetLength();
-                    byte[] pBuffer = new byte[length];
 
-                    switch (length)
+                    var pBuffer = length switch
                     {
-                        case 2:
-                            pBuffer = BitConverter.GetBytes((ushort)value);
-                            break;
-
-                        case 4:
-                            pBuffer = BitConverter.GetBytes((int)value);
-                            break;
-
-                        case 8:
-                            pBuffer = BitConverter.GetBytes(value);
-                            break;
-                    }
+                        2 => BitConverter.GetBytes((ushort)value),
+                        4 => BitConverter.GetBytes((int)value),
+                        8 => BitConverter.GetBytes(value),
+                        _ => new byte[length]
+                    };
 
                     return await SetAsync(pBuffer, length);
             }

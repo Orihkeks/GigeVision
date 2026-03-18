@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Prism.Commands;
 
 namespace GenICam
 {
@@ -22,12 +21,6 @@ namespace GenICam
             CommandValue = commandValue;
 
             // As the Execute method is async and the CommandValue is not, we should wait for the execution.
-            SetValueCommand = new DelegateCommand(ExecuteCommand);
-        }
-
-        private async void ExecuteCommand()
-        {
-            await Execute();
         }
 
         /// <summary>

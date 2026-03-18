@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Prism.Commands;
 
 namespace GenICam
 {
@@ -19,8 +18,6 @@ namespace GenICam
         public GenBoolean(CategoryProperties categoryProperties, IPValue pValue)
         : base(categoryProperties, pValue)
         {
-            GetValueCommand = new DelegateCommand(ExecuteGetValueCommand);
-            SetValueCommand = new DelegateCommand<object>(ExecuteSetValueCommand);
         }
 
         /// <summary>
@@ -57,32 +54,6 @@ namespace GenICam
             }
 
             throw new GenICamException(message: $"Unable to set the value, missing register reference", new MissingFieldException());
-        }
-
-        private async void ExecuteSetValueCommand(object value)
-        {
-            try
-            {
-                await SetValueAsync((bool)value);
-                ExecuteGetValueCommand();
-            }
-            catch (Exception ex)
-            {
-                //ToDo: display exception.
-            }
-        }
-
-        private async void ExecuteGetValueCommand()
-        {
-            try
-            {
-                Value = await GetValueAsync();
-                RaisePropertyChanged(nameof(Value));
-            }
-            catch (Exception ex)
-            {
-                //ToDo: display exception.
-            }
         }
     }
 }

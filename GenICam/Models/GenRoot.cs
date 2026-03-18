@@ -1,9 +1,8 @@
-﻿namespace GenICam
+﻿namespace GenICam;
+
+/// <summary>
+/// GenICam root implementation.
+/// </summary>
+public class GenRoot
 {
-    /// <summary>
-    /// GenICam root implementation.
-    /// </summary>
-    public class GenRoot
-    {
-    }
 }

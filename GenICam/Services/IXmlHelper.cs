@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace GenICam
+namespace GenICam;
+
+/// <summary>
+/// Interface for XML Helper.
+/// </summary>
+public interface IXmlHelper
 {
     /// <summary>
-    /// Interface for XML Helper.
+    /// Gets the list of categories.
     /// </summary>
-    public interface IXmlHelper
-    {
-        /// <summary>
-        /// Gets the list of categories.
-        /// </summary>
-        List<ICategory> CategoryDictionary { get; }
-    }
+    List<ICategory> CategoryDictionary { get; }
 }
