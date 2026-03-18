@@ -1,9 +1,8 @@
-﻿namespace GenICam
+﻿namespace GenICam;
+
+/// <summary>
+/// Interface for Is Implemented.
+/// </summary>
+public interface IIsImplemented
 {
-    /// <summary>
-    /// Interface for Is Implemented.
-    /// </summary>
-    public interface IIsImplemented
-    {
-    }
 }

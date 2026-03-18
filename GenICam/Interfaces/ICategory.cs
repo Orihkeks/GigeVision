@@ -20,16 +20,16 @@ namespace GenICam
         /// <summary>
         /// Gets the PValue.
         /// </summary>
-        public IPValue PValue { get; }
+        public IPValue? PValue { get; }
         
         /// <summary>
         /// Gets the Max PValue.
         /// </summary>
-        public IPValue PMax { get; }
+        public IPValue? PMax { get; }
 
         /// <summary>
         /// Gets the Min PValue.
         /// </summary>
-        public IPValue PMin { get; }
+        public IPValue? PMin { get; }
     }
 }

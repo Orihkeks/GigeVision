@@ -10,5 +10,5 @@ public interface IXmlHelper
     /// <summary>
     /// Gets the list of categories.
     /// </summary>
-    List<ICategory> CategoryDictionary { get; }
+    List<ICategory?> CategoryDictionary { get; }
 }

@@ -24,7 +24,7 @@ namespace GenICam
         /// <param name="value">The value.</param>
         /// <param name="unit">The unit.</param>
         /// <param name="pValue">The PValue.</param>
-        public GenInteger(CategoryProperties categoryProperties, long? min, long? max, long? inc, IPValue pMax, IPValue pMin, IPValue pInc, IncrementMode? incMode, Representation representation, long? value, string unit, IPValue pValue)
+        public GenInteger(CategoryProperties categoryProperties, long? min, long? max, long? inc, IPValue? pMax, IPValue? pMin, IPValue pInc, IncrementMode? incMode, Representation representation, long? value, string unit, IPValue? pValue)
                 : base(categoryProperties, pValue)
         {
             PMax = pMax;
@@ -77,7 +77,7 @@ namespace GenICam
         /// <summary>
         /// Gets the maximum value.
         /// </summary>
-        public long Max { get; private set; } = Int64.MaxValue;
+        public long Max { get; private set; } = long.MaxValue;
 
         /// <summary>
         /// Gets the increment.
@@ -112,12 +112,12 @@ namespace GenICam
         /// <summary>
         /// Gets the pointer on the mathematical maximum value.
         /// </summary>
-        public IPValue PMax { get; }
+        public IPValue? PMax { get; }
 
         /// <summary>
         /// Gets the pointer on the mathematical minimum value.
         /// </summary>
-        public IPValue PMin { get; }
+        public IPValue? PMin { get; }
 
         /// <inheritdoc/>
         public async Task<long?> GetValueAsync()

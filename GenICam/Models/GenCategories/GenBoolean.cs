@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GenICam
@@ -31,13 +30,13 @@ namespace GenICam
         /// <returns>The value as a bool.</returns>
         public async Task<bool> GetValueAsync()
         {
-            if (PValue is not null)
+            if (PValue is null)
             {
-                var value = await PValue.GetValueAsync();
-                return value == 1;
+                throw new GenICamException(message: $"Unable to get the value, missing register reference", new MissingFieldException());
             }
 
-            throw new GenICamException(message: $"Unable to get the value, missing register reference", new MissingFieldException());
+            var value = await PValue.GetValueAsync();
+            return value == 1;
         }
 
         /// <summary>
@@ -47,13 +46,13 @@ namespace GenICam
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         public async Task<IReplyPacket> SetValueAsync(bool value)
         {
-            if (PValue is not null)
+            if (PValue is null)
             {
-                var valueInByte = Convert.ToByte(value);
-                return await PValue.SetValueAsync(valueInByte); ;
+                throw new GenICamException(message: $"Unable to set the value, missing register reference", new MissingFieldException());
             }
 
-            throw new GenICamException(message: $"Unable to set the value, missing register reference", new MissingFieldException());
+            var valueInByte = Convert.ToByte(value);
+            return await PValue.SetValueAsync(valueInByte); ;
         }
     }
 }

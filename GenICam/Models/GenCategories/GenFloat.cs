@@ -24,7 +24,7 @@ namespace GenICam
         /// <param name="unit">The unit.</param>
         /// <param name="pValue">The PValue.</param>
         /// <param name="expressions">The expressions.</param>
-        public GenFloat(CategoryProperties categoryProperties, double min, double max, IPValue pMin, IPValue pMax, long inc, IncrementMode incMode, Representation representation, double value, string unit, IPValue pValue)
+        public GenFloat(CategoryProperties categoryProperties, double min, double max, IPValue? pMin, IPValue? pMax, long inc, IncrementMode incMode, Representation representation, double value, string unit, IPValue? pValue)
                 : base(categoryProperties, pValue)
         {
             PMax = pMax;
@@ -209,19 +209,20 @@ namespace GenICam
         /// <inheritdoc/>
         public async Task<long?> GetValueAsync()
         {
-            if (PValue is not null)
+            if (PValue is null)
             {
-                    Value = (long)(await PValue.GetValueAsync());
-                    return (long)Value;
+                throw new GenICamException(message: $"Unable to set the value, missing register reference", new MissingFieldException());
             }
 
-            throw new GenICamException(message: $"Unable to set the value, missing register reference", new MissingFieldException());
+            Value = (long)await PValue.GetValueAsync();
+            return (long)Value;
+
         }
 
         /// <inheritdoc/>
         public async Task<IReplyPacket> SetValueAsync(long value)
         {
-            if (PValue is IPValue pValue)
+            if (PValue is { } pValue)
             {
                 return await pValue.SetValueAsync(value);
             }
